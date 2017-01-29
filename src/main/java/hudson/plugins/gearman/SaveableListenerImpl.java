@@ -21,7 +21,7 @@ package hudson.plugins.gearman;
 import hudson.Extension;
 import hudson.XmlFile;
 import hudson.model.Saveable;
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.listeners.SaveableListener;
 
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class SaveableListenerImpl extends SaveableListener {
 
         // only look for changes to projects, specifically for project
         // label changes.  Node changes are handled in ComputerListenerImpl
-        if (o instanceof AbstractProject) {
+        if (o instanceof Job) {
             GearmanProxy.getInstance().registerJobs();
         }
     }

@@ -24,6 +24,7 @@ import hudson.model.ParameterValue;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.Cause;
 import hudson.model.Computer;
 import hudson.model.Hudson;
@@ -33,6 +34,8 @@ import hudson.model.Node;
 import hudson.model.TextParameterValue;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.slaves.OfflineCause;
+
+import jenkins.model.ParameterizedJobMixIn;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,11 +73,11 @@ public class StartJobWorker extends AbstractGearmanFunction {
             .getLogger(Constants.PLUGIN_LOGGER_NAME);
 
     Computer computer;
-    AbstractProject<?, ?> project;
+    Job<?, ?> project;
     String masterName;
     MyGearmanWorkerImpl worker;
 
-    public StartJobWorker(AbstractProject<?, ?> project, Computer computer, String masterName,
+    public StartJobWorker(Job<?, ?> project, Computer computer, String masterName,
                           MyGearmanWorkerImpl worker) {
         this.project = project;
         this.computer = computer;
@@ -84,7 +87,7 @@ public class StartJobWorker extends AbstractGearmanFunction {
 
    private String buildStatusData(AbstractBuild<?, ?> build) {
        Hudson hudson = Hudson.getInstance();
-       AbstractProject<?, ?> project = build.getProject();
+       Job<?, ?> project = build.getProject();
 
        Map data = new HashMap<String, String>();
 
@@ -188,7 +191,15 @@ public class StartJobWorker extends AbstractGearmanFunction {
                     project.getName()+" build #" +
                     project.getNextBuildNumber()+" on " + runNodeName
                     + " with UUID " + decodedUniqueId + " and build params " + buildParams);
-        QueueTaskFuture<?> future = project.scheduleBuild2(0, new Cause.UserIdCause(), actions);
+
+        ParameterizedJobMixIn jobMixIn = new ParameterizedJobMixIn() {
+            @Override
+            protected Job asJob() {
+                return project;
+            }
+        };
+
+        QueueTaskFuture<?> future = jobMixIn.scheduleBuild2(0, actions);
 
         // check build and pass results back to client
         String jobData;

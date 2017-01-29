@@ -18,7 +18,7 @@
 
 package hudson.plugins.gearman;
 
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.Computer;
 import hudson.model.Run;
 import hudson.security.ACL;
@@ -77,7 +77,7 @@ public class GearmanPluginUtil {
 
         SecurityContext oldContext = ACL.impersonate(ACL.SYSTEM);
         try {
-            AbstractProject<?,?> project = Jenkins.getActiveInstance().getItemByFullName(jobName, AbstractProject.class);
+            Job<?,?> project = Jenkins.getActiveInstance().getItemByFullName(jobName, Job.class);
             if (project != null){
                 Run<?,?> run = project.getBuildByNumber(buildNumber);
                 if (run != null) {

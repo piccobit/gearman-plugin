@@ -2,3 +2,5 @@
 /version.properties
 /work
 /.config
+.idea/
+*.iml

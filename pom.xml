@@ -16,8 +16,8 @@
    limitations under the License.
 -->
 
-<!-- 
-    Pass in the version on manual builds (i.e. mvn clean package -Dproject-version=1.0)
+<!--
+    Pass in the version on manual builds (i.e. mvn clean package -Dproject.version=1.0)
  -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,16 +28,20 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.625.3</version> <!--which version of Jenkins is this plugin built against? -->
+        <version>2.11</version> <!--which version of Jenkins is this plugin built against? -->
+    <relativePath/>
     </parent>
 
+    <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>gearman-plugin</artifactId>
+    <version>0.3-SNAPSHOT</version>
     <packaging>hpi</packaging>
-    <version>${project-version}</version>
 
     <name>Gearman Plugin</name>
     <description>Integrates Gearman application framework with Jenkins</description>
+    <!--
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Gearman+Plugin</url>
+    -->
 
     <licenses>
         <license>
@@ -52,6 +56,11 @@
             <id>zaro0508</id>
             <name>Khai Do</name>
             <email>zaro0508@gmail.com</email>
+        </developer>
+        <developer>
+            <id>piccobit</id>
+            <name>Hans-Dieter Stich</name>
+            <email>hans-dieter@stich.email</email>
         </developer>
     </developers>
 
@@ -80,11 +89,23 @@
         </repository>
         <site>
             <id>github-project-site</id>
-            <url>gitsite:git@github.com/openstack-infra/gearman-plugin</url>
+            <url>gitsite:git@github.com:piccobit/gearman-plugin.git</url>
         </site>
     </distributionManagement>
 
     <properties>
+        <workflow.version>1.4</workflow.version>
+        <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
+        <jenkins.version>2.32.1</jenkins.version>
+        <!-- Java Level to use. Java 7 required when using core >= 1.612 -->
+        <java.level>7</java.level>
+        <!-- Jenkins Test Harness version you use to test the plugin. -->
+        <!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
+        <jenkins-test-harness.version>2.13</jenkins-test-harness.version>
+        <!-- Other properties you may want to use:
+             ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
+             ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
+        -->
         <!-- http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compileTarget>1.6</compileTarget>
@@ -162,10 +183,12 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
                 </plugin>
+                <!-- Not needed by Maven 3
                 <plugin>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>${maven-enforcer-plugin.version}</version>
                 </plugin>
+                -->
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>${maven-install-plugin.version}</version>
@@ -339,6 +362,24 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <version>${workflow.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <version>${workflow.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-basic-steps</artifactId>
+            <version>${workflow.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

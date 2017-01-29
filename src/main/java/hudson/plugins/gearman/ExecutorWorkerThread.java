@@ -18,7 +18,7 @@
 
 package hudson.plugins.gearman;
 
-import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.Computer;
 import hudson.model.Label;
 import hudson.model.labels.LabelAtom;
@@ -117,15 +117,14 @@ public class ExecutorWorkerThread extends AbstractWorkerThread{
         if (!computer.isOffline()) {
             Node node = computer.getNode();
 
-            List<AbstractProject> allProjects = Jenkins.getActiveInstance().getAllItems(AbstractProject.class);
-            for (AbstractProject<?, ?> project : allProjects) {
-
-                if (project.isDisabled()) { // ignore all disabled projects
-                    continue;
-                }
+            List<Job> allProjects = Jenkins.getActiveInstance().getAllItems(Job.class);
+            for (Job<?, ?> project : allProjects) {
 
                 String projectName = project.getName();
-                Label label = project.getAssignedLabel();
+                // FIXME
+                //
+                //Label label = project.getAssignedLabel();
+                Label label = null;
 
                 if (label == null) { // project has no label -> so register
                                      // "build:projectName" on all non exclusive nodes
