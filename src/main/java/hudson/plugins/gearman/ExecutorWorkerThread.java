@@ -84,7 +84,7 @@ public class ExecutorWorkerThread extends AbstractWorkerThread{
      *      build:pep8 on oneiric-456
      *
      *  - If the project contains one label then we register with the computer
-     *      that contains the corresponding label. Labels with '&&' is
+     *      that contains the corresponding label. Labels with {@literal &&} is
      *      considered just one label
      *
      *      build:pep8:precise on precise-123
@@ -92,7 +92,7 @@ public class ExecutorWorkerThread extends AbstractWorkerThread{
      *      build:pep8:precise on precise-129
      *      build:pep8 on precise-129
      *
-     *  - If the project contains multiple labels separated by '||' then
+     *  - If the project contains multiple labels separated by || then
      *      we register with the computers that contain the corresponding labels
      *
      *      build:pep8:precise on precise-123
