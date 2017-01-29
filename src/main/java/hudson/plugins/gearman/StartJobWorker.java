@@ -22,8 +22,9 @@ package hudson.plugins.gearman;
 import hudson.model.Action;
 import hudson.model.ParameterValue;
 import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+//import hudson.model.AbstractBuild;
+import hudson.model.Run;
+//import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.Cause;
 import hudson.model.Computer;
@@ -85,9 +86,9 @@ public class StartJobWorker extends AbstractGearmanFunction {
         this.worker = worker;
     }
 
-   private String buildStatusData(AbstractBuild<?, ?> build) {
+   private String buildStatusData(Run<?, ?> build) {
        Hudson hudson = Hudson.getInstance();
-       Job<?, ?> project = build.getProject();
+       Job<?, ?> project = build.getParent();
 
        Map data = new HashMap<String, String>();
 
@@ -107,7 +108,10 @@ public class StartJobWorker extends AbstractGearmanFunction {
        }
 
        ArrayList<String> nodeLabels = new ArrayList<String>();
-       Node node = build.getBuiltOn();
+       // FIXME
+       //
+       //Node node = build.getBuiltOn();
+       Node node = null;
        if (node != null) {
            Set<LabelAtom> nodeLabelAtoms = node.getAssignedLabels();
            for (LabelAtom labelAtom : nodeLabelAtoms) {
@@ -220,7 +224,7 @@ public class StartJobWorker extends AbstractGearmanFunction {
 
             // wait for start of build
             Queue.Executable exec = future.getStartCondition().get();
-            AbstractBuild<?, ?> currBuild = (AbstractBuild<?, ?>) exec;
+            Run<?, ?> currBuild = (Run<?, ?>) exec;
 
             if (!offlineWhenComplete) {
                 // Unlock the monitor for this worker
